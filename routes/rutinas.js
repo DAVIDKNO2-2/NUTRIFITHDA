@@ -20,4 +20,4 @@ router.put("/exercises/:id", rutinasController.updateExercise);
 // Delete a routine
 router.delete("/:id", rutinasController.deleteRoutine);
 
-module.exports = router;
+module.exports = router; 

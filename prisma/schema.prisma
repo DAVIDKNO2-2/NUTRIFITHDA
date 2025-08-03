@@ -7,46 +7,147 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+model Rol {
+  id     Int      @id @default(autoincrement())
+  nombre String
+
+  usuarios Usuario[]
 }
 
-model AlimentacionPlan {
-  id          Int      @id @default(autoincrement())
-  nombre      String
+model Plan {
+  id        Int       @id @default(autoincrement())
+  tipoDePlan String
+
+  usuarios Usuario[]
+  clientes Cliente[]
+}
+
+model Usuario {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  rolId    Int
+  planId   Int?
+
+  rol      Rol       @relation(fields: [rolId], references: [id])
+  plan     Plan?     @relation(fields: [planId], references: [id])
+  entrenador Entrenador?
+  cliente  Cliente?
+}
+
+model Entrenador {
+  id                Int     @id @default(autoincrement())
+  fotoPerfil        String?
+  nombreCompleto    String
+  edad              Int?
+  telefono          String?
+  ciudad            String?
+  pais              String?
+  biografia         String?
+  nivelAcademico    String?
+  certificaciones   String?
+  aniosExperiencia  Int?
+  especialidades    String?
+  documentosAdjuntos String?
+  usuarioId         Int     @unique
+  clienteId         Int     @unique
+
+  usuario Usuario   @relation(fields: [usuarioId], references: [id])
+  
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+
+  
+}
+
+model Cliente {
+  id                     Int       @id @default(autoincrement())
+  fotoPerfil             String?
+  nombreCompleto         String
+  genero                 String?
+  edad                   Int?
+  correoElectronico      String?
+  telefono               String?
+  ciudad                 String?
+  pais                   String?
+  alturaCm               Float?
+  pesoActualKg           Float?
+  pesoObjetivoKg         Float?
+  condicionesMedicas     String?
+  alergias               String?
+  nivelActividad         String?
+  objetivoGeneral        String?
+  tipoAlimentacion       String?
+  alimentosPreferidos    String?
+  alimentosNoPreferidos  String?
+  restriccionesDieteticas String?
+  planId                 Int?
+  usuarioId              Int       @unique
+
+  plan       Plan?       @relation(fields: [planId], references: [id])
+  usuario    Usuario     @relation(fields: [usuarioId], references: [id])
+  entrenador Entrenador?
+  rutinasUsuario RutinasUsuario[]
+  alimentacionCliente AlimentacionCliente[]
+}
+
+model Rutina {
+  id         Int       @id @default(autoincrement())
+  nombre     String
   descripcion String?
-  fechaInicio DateTime
-  fechaFin    DateTime
-  creadoEn    DateTime @default(now())
-  actualizadoEn DateTime @updatedAt
-  comidas     Comida[]
+  creadoEn   DateTime  @default(now())
+
+  ejercicios Ejercicio[]
+  rutinasUsuario RutinasUsuario[]
+}
+
+model Ejercicio {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  repeticiones String?
+  instrucciones String?
+  rutinaId     Int
+
+  rutina       Rutina   @relation(fields: [rutinaId], references: [id])
+}
+
+model RutinasUsuario {
+  id        Int     @id @default(autoincrement())
+  clienteId Int
+  rutinaId  Int
+
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+  rutina    Rutina  @relation(fields: [rutinaId], references: [id])
+}
+
+model Alimentacion {
+  id            Int       @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  fechaInicio   DateTime
+  fechaFin      DateTime
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+
+  alimentacionCliente AlimentacionCliente[]
+  comidas             Comida[]
+}
+
+model AlimentacionCliente {
+  id             Int           @id @default(autoincrement())
+  clienteId      Int
+  alimentacionId Int
+
+  cliente        Cliente       @relation(fields: [clienteId], references: [id])
+  alimentacion   Alimentacion @relation(fields: [alimentacionId], references: [id])
 }
 
 model Comida {
-  id            Int      @id @default(autoincrement())
-  tipo          String   // desayuno, almuerzo, cena, snack
-  hora          String?
-  descripcion   String
-  planId        Int
-  plan          AlimentacionPlan @relation(fields: [planId], references: [id])
+  id          Int       @id @default(autoincrement())
+  tipo        String
+  hora        String?
+  descripcion String
+  alimentacionId     Int
+
+  alimentacion Alimentacion @relation(fields: [alimentacionId], references: [id])
 }
 
-model Routine {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime   @default(now())
-  exercises   Exercise[]
-}
-
-model Exercise {
-  id           Int     @id @default(autoincrement())
-  name         String
-  repetitions  String?
-  instructions String?
-  routine      Routine @relation(fields: [routineId], references: [id])
-  routineId    Int
-}
