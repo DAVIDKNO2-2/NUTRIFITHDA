@@ -1,20 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const alimentacionController = require("../controllers/alimentacionController");
+const alimentacionController = require('../controllers/alimentacionController');
 
-// Crear plan
-router.post("/", alimentacionController.createPlan);
-
-// Listar todos los planes
-router.get("/", alimentacionController.getAllPlanes);
-
-// Obtener un plan por ID
-router.get("/:id", alimentacionController.getPlanById);
-
-// Actualizar un plan
-router.put("/:id", alimentacionController.updatePlan);
-
-// Eliminar un plan
-router.delete("/:id", alimentacionController.deletePlan);
+router.post('/', alimentacionController.createAlimentacion);
+router.get('/', alimentacionController.getAllAlimentaciones);
+router.get('/:id', alimentacionController.getAlimentacionById);
+router.put('/:id', alimentacionController.updateAlimentacion);
+router.delete('/:id', alimentacionController.deleteAlimentacion);
 
 module.exports = router;
