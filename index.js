@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 
 // Importar las rutas de la API
@@ -16,6 +17,15 @@ const PORT = process.env.PORT || 3000;
 // --- MIDDLEWARE ---
 // Parsear JSON en las peticiones
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware para manejar sesiones
+app.use(session({
+  secret: 'nutrifit-secret-key', // Clave secreta para firmar la cookie de sesión
+  resave: false,
+  saveUninitialized: false
+}));
+
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -55,6 +65,60 @@ app.get('/login', (req, res) => {
 // Servir la vista del módulo de registro
 app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'registro.html'));
+});
+
+// Servir la vista de cambiar contraseña
+app.get('/cambiar-contrasena', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'cambiar-contrasena.html'));
+});
+
+// Servir la vista de confirmación exitosa
+app.get('/confirmacion-exitosa', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'confirmacion-exitosa.html'));
+});
+
+// Servir la vista de recuperar contraseña
+app.get('/recuperar-contrasena', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'recuperar-contrasena.html'));
+});
+
+// Servir la vista de recuperar usuario
+app.get('/recuperar-usuario', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'recuperar-usuario.html'));
+});
+
+// Servir la vista de resetear contraseña
+app.get('/resetear-contrasena', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'resetear-contrasena.html'));
+});
+
+// Servir la vista del dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+});
+
+// Servir la vista del perfil
+app.get('/perfil', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'perfil.html'));
+});
+
+// Ruta para obtener los datos de la sesión
+app.get('/session', (req, res) => {
+  if (req.session.userId) {
+    // Si la sesión existe, devolver los datos de la sesión
+    res.json({
+      userName: req.session.userName,
+      userEmail: req.session.userEmail
+    });
+  } else {
+    // Si no hay sesión activa, devolver un error
+    res.json({ error: 'No estás logueado' });
+  }
+});
+
+// ✅ Ruta para mostrar página de confirmación de contraseña cambiada
+app.get('/confirmacion-cambio', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'confirmacion-cambio.html'));
 });
 
 

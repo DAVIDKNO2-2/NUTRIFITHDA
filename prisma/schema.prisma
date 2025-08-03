@@ -28,11 +28,16 @@ model Usuario {
   password String
   rolId    Int
   planId   Int?
+  name     String?
 
   rol      Rol       @relation(fields: [rolId], references: [id])
   plan     Plan?     @relation(fields: [planId], references: [id])
   entrenador Entrenador?
   cliente  Cliente?
+
+  // Campos para recuperación
+  resetToken       String?
+  resetTokenExpiry DateTime?
 }
 
 model Entrenador {
