@@ -20,12 +20,20 @@ const login = async (email, password) => {
 };
 
 const register = async (data) => {
-    const { password, ...userData } = data;
+    // The 'confirm-password' field from the form is not needed here.
+    const { password, rolId, ...userData } = data;
+
+    if (!rolId) {
+        throw new Error('El rol es requerido.');
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
     return await prisma.usuario.create({
         data: {
             ...userData,
             password: hashedPassword,
+            rolId: parseInt(rolId, 10),
         },
     });
 };
