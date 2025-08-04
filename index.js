@@ -57,6 +57,15 @@ app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'registro.html'));
 });
 
+// Servir las vistas de recuperación de contraseña
+app.get('/recuperar-contrasena.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'recuperar-contrasena.html'));
+});
+
+app.get('/resetear-contrasena.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'resetear-contrasena.html'));
+});
+
 
 // --- RUTAS DE LA API (BACKEND) ---
 app.use('/api/alimentacion', alimentacionRoutes);
