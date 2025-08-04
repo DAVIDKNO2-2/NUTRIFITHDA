@@ -31,7 +31,7 @@ const register = async (data) => {
 
     return await prisma.usuario.create({
         data: {
-            ...userData,
+            email: userData.email,
             password: hashedPassword,
             rolId: parseInt(rolId, 10),
         },
