@@ -1,12 +1,89 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NutriFit - Iniciar Sesión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Iniciar Sesión</h1>
-    <p>Página de inicio de sesión en construcción.</p>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+<div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-sm">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-red-600">NutriFit</h1>
+        <p class="text-gray-500 mt-2">Inicia sesión para continuar</p>
+    </div>
+
+    <form id="Login">
+        <div class="mb-5">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Correo Electrónico
+            </label>
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition"
+                    required
+            />
+        </div>
+
+        <div class="mb-6">
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                Contraseña
+            </label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition"
+                    required
+            />
+        </div>
+
+        <button
+                type="submit"
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-transform transform hover:scale-105"
+        >
+            Ingresar
+        </button>
+    </form>
+
+    <div class="text-center text-sm text-gray-600 mt-4">
+        <a href="/recuperar-contrasena.html" class="text-red-600 hover:underline font-medium">
+            ¿Olvidaste tu contraseña?
+        </a>
+    </div>
+
+    <p class="text-center text-sm text-gray-600 mt-6">
+        ¿No tienes una cuenta?
+        <a href="/registro" class="text-red-600 hover:underline font-medium">
+            Regístrate aquí
+        </a>
+    </p>
+</div>
+
+<script>
+    document.getElementById('Login').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            window.location.href = '/';
+        } else {
+            const texto = await response.text();
+            alert(texto);
+        }
+    });
+</script>
 </body>
 </html>

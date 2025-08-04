@@ -7,6 +7,8 @@ const alimentacionRoutes = require('./routes/alimentacion');
 const busquedaRoutes = require('./routes/busqueda');
 const rutinasRoutes = require('./routes/rutinas');
 const userRoutes = require('./routes/user');
+const entrenamientoRoutes = require('./routes/entrenamiento');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- RUTAS DE LAS VISTAS (FRONTEND) ---
 // Servir el index.html principal
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 // Servir la vista del módulo de alimentación
@@ -37,6 +39,11 @@ app.get('/busqueda', (req, res) => {
 // Servir la vista del módulo de rutinas de entrenamiento
 app.get('/rutinas', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'rutinas.html'));
+});
+
+// Servir la vista del módulo de entrenamiento
+app.get('/entrenamiento', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'entrenamiento.html'));
 });
 
 
@@ -56,6 +63,8 @@ app.use('/api/alimentacion', alimentacionRoutes);
 app.use('/api/busqueda', busquedaRoutes);
 app.use('/api/rutinas', rutinasRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/entrenamiento', entrenamientoRoutes);
+app.use('/api/auth', authRoutes);
 
 
 // --- MANEJO DE ERRORES ---

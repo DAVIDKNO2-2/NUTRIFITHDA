@@ -13,9 +13,6 @@
     </header>
 
     <section class="form-section">
-      <h2>Id Usuario</h2>
-      <input type="text" id="nombre" placeholder="Id" required />
-
       <h2>Crear nuevo plan</h2>
       <form id="formPlan">
         <input type="text" id="nombre" placeholder="Nombre del plan" required />
@@ -50,6 +47,86 @@
     </section>
   </div>
 
-  <script src="/alimentacion/js/main.js"></script>
+  <script>
+    const formPlan = document.getElementById('formPlan');
+    const listaPlanes = document.getElementById('listaPlanes');
+    const comidasContainer = document.getElementById('comidasContainer');
+
+    const fetchPlanes = async () => {
+        const response = await fetch('/api/alimentacion');
+        const planes = await response.json();
+        listaPlanes.innerHTML = '';
+        planes.forEach(plan => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <h3>${plan.nombre}</h3>
+                <p>${plan.descripcion}</p>
+                <p>Del ${new Date(plan.fechaInicio).toLocaleDateString()} al ${new Date(plan.fechaFin).toLocaleDateString()}</p>
+                <h4>Comidas:</h4>
+                <ul>
+                    ${plan.comidas.map(comida => `<li>${comida.tipo}: ${comida.descripcion} a las ${comida.hora}</li>`).join('')}
+                </ul>
+            `;
+            listaPlanes.appendChild(li);
+        });
+    };
+
+    const agregarComida = () => {
+        const div = document.createElement('div');
+        div.classList.add('comida');
+        div.innerHTML = `
+            <select class="tipo">
+              <option value="desayuno">Desayuno</option>
+              <option value="almuerzo">Almuerzo</option>
+              <option value="cena">Cena</option>
+              <option value="snack">Snack</option>
+            </select>
+            <input type="time" class="hora" />
+            <input type="text" class="descripcion" placeholder="Descripción de la comida" required />
+        `;
+        comidasContainer.appendChild(div);
+    };
+
+    formPlan.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        const descripcion = document.getElementById('descripcion').value;
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        const fechaFin = document.getElementById('fechaFin').value;
+        const comidasNodes = document.querySelectorAll('.comida');
+        const comidas = [];
+        comidasNodes.forEach(node => {
+            comidas.push({
+                tipo: node.querySelector('.tipo').value,
+                hora: node.querySelector('.hora').value,
+                descripcion: node.querySelector('.descripcion').value,
+            });
+        });
+
+        const response = await fetch('/api/alimentacion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nombre,
+                descripcion,
+                fechaInicio: new Date(fechaInicio),
+                fechaFin: new Date(fechaFin),
+                comidas,
+            }),
+        });
+
+        if (response.ok) {
+            fetchPlanes();
+            formPlan.reset();
+        } else {
+            const error = await response.json();
+            alert(error.error);
+        }
+    });
+
+    fetchPlanes();
+  </script>
 </body>
 </html>

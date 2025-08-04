@@ -1,52 +1,57 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const alimentacionService = require('../services/alimentacionService');
 
-const createPlan = async (req, res) => {
-  try {
-    const plan = await prisma.alimentacionPlan.create({
-      data: req.body,
-    });
-    res.json(plan);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+const createAlimentacion = async (req, res) => {
+    try {
+        const alimentacion = await alimentacionService.createAlimentacion(req.body);
+        res.json(alimentacion);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-const getAllPlanes = async (req, res) => {
-  const planes = await prisma.alimentacionPlan.findMany({
-    include: { comidas: true }
-  });
-  res.json(planes);
+const getAllAlimentaciones = async (req, res) => {
+    try {
+        const alimentaciones = await alimentacionService.getAllAlimentaciones();
+        res.json(alimentaciones);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-const getPlanById = async (req, res) => {
-  const { id } = req.params;
-  const plan = await prisma.alimentacionPlan.findUnique({
-    where: { id: parseInt(id) },
-    include: { comidas: true }
-  });
-  res.json(plan);
+const getAlimentacionById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const alimentacion = await alimentacionService.getAlimentacionById(id);
+        res.json(alimentacion);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-const updatePlan = async (req, res) => {
-  const { id } = req.params;
-  const plan = await prisma.alimentacionPlan.update({
-    where: { id: parseInt(id) },
-    data: req.body,
-  });
-  res.json(plan);
+const updateAlimentacion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const alimentacion = await alimentacionService.updateAlimentacion(id, req.body);
+        res.json(alimentacion);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-const deletePlan = async (req, res) => {
-  const { id } = req.params;
-  await prisma.alimentacionPlan.delete({ where: { id: parseInt(id) } });
-  res.json({ message: "Plan eliminado" });
+const deleteAlimentacion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await alimentacionService.deleteAlimentacion(id);
+        res.json({ message: 'Alimentacion eliminada' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 module.exports = {
-  createPlan,
-  getAllPlanes,
-  getPlanById,
-  updatePlan,
-  deletePlan,
+    createAlimentacion,
+    getAllAlimentaciones,
+    getAlimentacionById,
+    updateAlimentacion,
+    deleteAlimentacion,
 };

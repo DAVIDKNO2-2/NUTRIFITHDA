@@ -33,6 +33,9 @@ model Usuario {
   plan     Plan?     @relation(fields: [planId], references: [id])
   entrenador Entrenador?
   cliente  Cliente?
+
+  resetToken       String?   @unique
+  resetTokenExpiry DateTime?
 }
 
 model Entrenador {
